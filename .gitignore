@@ -5,8 +5,8 @@
 /.pnp
 .pnp.js
 /.bundle
-/vendor/bundle
-/vendor/assets/bower_components
+**/vendor/bundle
+**/vendor/assets/bower_components
 
 # ============================================
 # Next.js
@@ -19,22 +19,22 @@ next-env.d.ts
 # ============================================
 # Rails
 # ============================================
-/db/*.sqlite3
-/db/*.sqlite3-journal
-/db/*.sqlite3-[0-9]*
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
-/storage/*
-!/storage/.keep
-/public/system
-/public/packs
-/public/packs-test
-/public/assets
-/public/uploads
-config/initializers/secret_token.rb
-config/master.key
+**/db/*.sqlite3
+**/db/*.sqlite3-journal
+**/db/*.sqlite3-[0-9]*
+**/log/*
+**/tmp/*
+!**/log/.keep
+!**/tmp/.keep
+**/storage/*
+!**/storage/.keep
+**/public/system
+**/public/packs
+**/public/packs-test
+**/public/assets
+**/public/uploads
+**/config/initializers/secret_token.rb
+**/config/master.key
 rerun.txt
 
 # ============================================
@@ -59,7 +59,7 @@ yarn-error.log*
 # ============================================
 # Testing
 # ============================================
-/spec/tmp
+**/spec/tmp
 capybara-*.html
 pickle-email-*.html
 .rspec
