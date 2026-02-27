@@ -1,0 +1,95 @@
+# 環境変数
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# Rails
+backend/log/*
+!backend/log/.keep
+backend/tmp/
+backend/storage/
+backend/.bundle/
+backend/vendor/bundle/
+
+# credentials / master key
+backend/config/master.key
+backend/config/credentials/*.key
+
+# DB
+backend/db/*.sqlite3
+backend/db/*.sqlite3-*
+
+# pid
+backend/tmp/pids/
+backend/tmp/cache/
+backend/tmp/sockets/
+
+# bootsnap
+backend/tmp/cache/bootsnap/
+
+# Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.swc/
+frontend/next-env.d.ts
+frontend/coverage/
+
+# npm / yarn / pnpm
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+frontend/package-lock.json.bak
+
+# Vercel
+frontend/.vercel
+
+# Docker
+docker-compose.override.yml
+
+# macOS
+.DS_Store
+**/.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# JetBrains
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+Session.vim
+.netrwhist
+
+# Emacs
+\#*\#
+.#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+*.log
+*.pid
+*.seed
+*.pid.lock
