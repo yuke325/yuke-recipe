@@ -3,6 +3,8 @@ set -e
 
 rm -f /app/tmp/pids/server.pid
 
-bundle exec rails db:prepare
+if [ "$1" = "bin/rails" ]; then
+  bundle exec rails db:prepare
+fi
 
 exec "$@"
