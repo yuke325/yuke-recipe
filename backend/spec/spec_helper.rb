@@ -27,14 +27,6 @@ RSpec.configure do |config|
     #     # => "be bigger than 2"
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
 
-   # Committee config
-   config.add_setting :committee_options
-   config.committee_options = {
-     schema_path: Rails.root.join('..', 'openapi', 'hello.yaml').to_s,
-     parse_response_by_content_type: false
-   }
-
-   config.include Committee::Rails::Test::Methods
   end
 
   # rspec-mocks config goes here. You can use an alternate test double
