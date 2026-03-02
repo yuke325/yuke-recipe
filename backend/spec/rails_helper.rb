@@ -73,7 +73,7 @@ RSpec.configure do |config|
   # Committee config
   config.add_setting :committee_options
   config.committee_options = {
-    schema_path: Rails.root.join('..', 'openapi', 'hello.yaml').to_s,
+    schema_path: '/openapi/hello.yaml',
     parse_response_by_content_type: false
   }
 
