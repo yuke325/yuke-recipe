@@ -23,11 +23,7 @@ services:
     environment:
       RAILS_ENV: development
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
-      DATABASE_HOST: db
-      DATABASE_PORT: "3306"
-      DATABASE_NAME: ${MYSQL_DATABASE}
-      DATABASE_USER: ${MYSQL_USER}
-      DATABASE_PASSWORD: ${MYSQL_PASSWORD}
+      DATABASE_URL: "mysql2://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}"
     ports:
       - "3000:3000"
     volumes:
