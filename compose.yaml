@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      # RAILS_ENV: test
+      # RAILS_ENV: development
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       DATABASE_URL: "mysql2://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}"
     ports:
