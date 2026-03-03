@@ -1,23 +1,22 @@
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
-import { Configuration, DefaultApi } from "@/openapi";
+import type { GetServerSideProps } from "next";
+import { Configuration, DefaultApi, type GetHello200Response } from "@/openapi";
 
-type Props = {
-  message: string;
+type HelloPageProps = GetHello200Response;
+
+export const getServerSideProps: GetServerSideProps<
+  HelloPageProps
+> = async () => {
+  const api = new DefaultApi(
+    new Configuration({
+      basePath: process.env.RAILS_API_BASE_URL ?? "http://localhost:3000",
+    }),
+  );
+
+  const { data } = await api.getHello();
+
+  return { props: data };
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const config = new Configuration({ basePath: "http://localhost:3000" });
-  const api = new DefaultApi(config);
-  const response = await api.getHello();
-  return {
-    props: {
-      message: response.data.message,
-    },
-  };
-};
-
-export default function HelloPage({
-  message,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  return <p>{message}</p>;
+export default function HelloPage({ message }: HelloPageProps) {
+  return <h1>{message}</h1>;
 }
