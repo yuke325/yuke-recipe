@@ -73,7 +73,7 @@ RSpec.configure do |config|
   # Committee config
   config.add_setting :committee_options
   config.committee_options = {
-    schema_path: '/openapi/hello.yaml',
+    schema_path: '/openapi/openapi.yaml',
     parse_response_by_content_type: false
   }
 
