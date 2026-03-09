@@ -1,0 +1,2 @@
+require_relative "users.schema.rb"
+require_relative "recipes.schema.rb"
