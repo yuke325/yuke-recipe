@@ -52,4 +52,5 @@ group :development, :test do
 
   gem 'rspec-rails'
   gem 'committee-rails'
+  gem 'factory_bot_rails'
 end
