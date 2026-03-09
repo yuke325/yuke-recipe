@@ -9,8 +9,43 @@ servers:
     description: "ローカル環境"
 paths:
   /recipes:
-    $ref: "./paths/recipes.yaml#/recipes"
+    get:
+      summary: レシピ一覧取得
+      operationId: listRecipes
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recipe"
 components:
   schemas:
     Recipe:
-      $ref: ./components/schemas/recipe.yaml
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
