@@ -1,0 +1,16 @@
+openapi: "3.0.3"
+info:
+  title: recipe Management API
+  description:
+
+  version: "1.0.0"
+servers:
+  - url: ""
+    description: "ローカル環境"
+paths:
+  /recipes:
+    $ref: "./paths/recipes.yaml#/recipes"
+components:
+  schemas:
+    Recipe:
+      $ref: ./components/schemas/recipe.yaml
