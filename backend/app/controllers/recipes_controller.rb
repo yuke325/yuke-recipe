@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   def index
     recipes = Recipe.all
-    render json: recipes
+    render json: RecipeResource.new(recipes).serialize
   end
 end
