@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
-  title: recipe Management API
-  description:
+  title: Recipe Management API
+  description: レシピ管理API
 
   version: "1.0.0"
 servers:
@@ -21,7 +21,103 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Recipe"
+
+    post:
+      summary: レシピ作成
+      operationId: createRecipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecipeCreateRequest"
+      responses:
+        "201":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /recipes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/RecipeId"
+
+    get:
+      summary: レシピ詳細取得
+      operationId: getRecipe
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        "404":
+          description: レシピが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      summary: レシピ更新
+      operationId: updateRecipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecipeUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        "404":
+          description: レシピが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: レシピ削除
+      operationId: deleteRecipe
+      responses:
+        "204":
+          description: 削除成功
+        "404":
+          description: レシピが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
+  parameters:
+    RecipeId:
+      name: id
+      in: path
+      required: true
+      description: レシピID
+      schema:
+        type: integer
+        format: int64
+
   schemas:
     Recipe:
       type: object
@@ -49,3 +145,37 @@ components:
           type: string
           format: date-time
           readOnly: true
+
+    RecipeCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+
+    RecipeUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
