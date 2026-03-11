@@ -26,6 +26,12 @@ RSpec.describe RecipeResource do
 
         expect(json).to eq(serialized_recipe(recipe))
       end
+
+      it '公開対象外の属性を含まないこと' do
+        json = JSON.parse(described_class.new(recipe).serialize)
+
+        expect(json).not_to have_key('user_id')
+      end
     end
 
     context '複数のレシピをシリアライズする場合' do
@@ -36,6 +42,17 @@ RSpec.describe RecipeResource do
         json = JSON.parse(described_class.new(Recipe.order(:id)).serialize)
 
         expect(json).to eq([serialized_recipe(curry), serialized_recipe(pasta)])
+      end
+    end
+
+    context 'description が nil のレシピをシリアライズする場合' do
+      let(:recipe) { create(:recipe, name: 'スープ', description: nil) }
+
+      it 'description を null としてシリアライズする' do
+        json = JSON.parse(described_class.new(recipe).serialize)
+
+        expect(json).to eq(serialized_recipe(recipe))
+        expect(json['description']).to be_nil
       end
     end
   end
