@@ -51,8 +51,8 @@ RSpec.describe User, type: :model do
     end
 
     it 'email が重複する場合は無効であること' do
-      create(:user, email: 'test@example.com')
-      user = build(:user, email: 'test@example.com')
+      create(:user, email: 'spec@example.com')
+      user = build(:user, email: 'spec@example.com')
 
       expect(user).not_to be_valid
       expect(user.errors[:email]).to include('has already been taken')
