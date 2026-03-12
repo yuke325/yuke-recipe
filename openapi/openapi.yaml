@@ -171,11 +171,17 @@ components:
     ErrorResponse:
       type: object
       required:
-        - message
+        - errors
       properties:
-        message:
-          type: string
         errors:
           type: array
           items:
-            type: string
+            type: object
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: string
+              message:
+                type: string

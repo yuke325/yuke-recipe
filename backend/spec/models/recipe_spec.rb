@@ -22,6 +22,19 @@ RSpec.describe Recipe, type: :model do
       expect(recipe.errors[:name]).to include("can't be blank")
     end
 
+    it 'name が 255 文字の場合は有効であること' do
+      recipe = build(:recipe, name: 'a' * 255)
+
+      expect(recipe).to be_valid
+    end
+
+    it 'name が 256文字の場合は無効であること' do
+      recipe = build(:recipe, name: 'a' * 256)
+
+      expect(recipe).not_to be_valid
+      expect(recipe.errors[:name]).to include('is too long (maximum is 255 characters)')
+    end
+
     it 'user が nil の場合は無効であること' do
       recipe = build(:recipe, user: nil)
 

@@ -22,6 +22,19 @@ RSpec.describe User, type: :model do
       expect(user.errors[:name]).to include("can't be blank")
     end
 
+    it 'name が 255 文字の場合は有効であること' do
+      user = build(:user, name: 'a' * 255)
+
+      expect(user).to be_valid
+    end
+
+    it 'name が256文字の場合は無効であること' do
+      user = build(:user, name: 'a' * 256)
+
+      expect(user).not_to be_valid
+      expect(user.errors[:name]).to include('is too long (maximum is 255 characters)')
+    end
+
     it 'email が nil の場合は無効であること' do
       user = build(:user, email: nil)
 
@@ -34,6 +47,19 @@ RSpec.describe User, type: :model do
 
       expect(user).not_to be_valid
       expect(user.errors[:email]).to include("can't be blank")
+    end
+
+    it 'email が 255 文字の場合は有効であること' do
+      user = build(:user, email: 'a' * 243 + '@example.com')
+
+      expect(user).to be_valid
+    end
+
+    it 'email が 256 文字の場合は無効であること' do
+      user = build(:user, email: 'a' * 244 + '@example.com')
+
+      expect(user).not_to be_valid
+      expect(user.errors[:email]).to include('is too long (maximum is 255 characters)')
     end
 
     it 'password_hash が nil の場合は無効であること' do
