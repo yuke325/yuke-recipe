@@ -1,31 +1,37 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
 import { createRecipe } from "@/api/recipes";
+import type { RecipeFormValues } from "@/types/recipeForm";
 
 export default function NewRecipePage() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setErrorMessage("");
-    setIsSubmitting(true);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { isSubmitting, errors },
+  } = useForm<RecipeFormValues>({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
+
+  const onSubmit = async (data: RecipeFormValues) => {
+    clearErrors("root");
 
     try {
-      await createRecipe({
-        name,
-        description: description,
-      });
+      await createRecipe(data);
       await router.push("/recipes");
-    } catch (error) {
-      console.error("Failed to create recipe:", error);
-      setErrorMessage("レシピの作成に失敗しました。");
-    } finally {
-      setIsSubmitting(false);
+    } catch (e) {
+      console.error("Failed to create recipe:", e);
+      setError("root", {
+        type: "server",
+        message: "レシピの作成に失敗しました。",
+      });
     }
   };
 
@@ -33,28 +39,23 @@ export default function NewRecipePage() {
     <main>
       <h1>新しいレシピを作成</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="name">名前</label>
           <input
             id="name"
             type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            required
+            {...register("name", { required: "名前は必須です" })}
           />
+          {errors.name ? <p>{errors.name.message}</p> : null}
         </div>
 
         <div>
           <label htmlFor="description">説明</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
+          <textarea id="description" {...register("description")} />
         </div>
 
-        {errorMessage ? <p>{errorMessage}</p> : null}
+        {errors.root ? <p>{errors.root.message}</p> : null}
 
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "作成中..." : "作成する"}

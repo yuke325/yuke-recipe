@@ -1,11 +1,12 @@
-import { useState } from "react";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
 import { updateRecipe } from "@/api/recipes";
 import { createApiClient } from "@/api/client";
 import type { Recipe } from "@/openapi/api";
+import type { RecipeFormValues } from "@/types/recipeForm";
 
 type Props = {
   recipe: Recipe | null;
@@ -36,8 +37,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
         hasError: false,
       },
     };
-  } catch (error) {
-    console.error("Failed to fetch recipe for edit:", error);
+  } catch (e) {
+    console.error("Failed to fetch recipe for edit:", e);
 
     return {
       props: {
@@ -53,10 +54,19 @@ export default function EditRecipePage({
   hasError,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const [name, setName] = useState(recipe?.name ?? "");
-  const [description, setDescription] = useState(recipe?.description ?? "");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { isSubmitting, errors },
+  } = useForm<RecipeFormValues>({
+    defaultValues: {
+      name: recipe?.name ?? "",
+      description: recipe?.description ?? "",
+    },
+  });
 
   if (hasError || !recipe) {
     return (
@@ -70,22 +80,18 @@ export default function EditRecipePage({
     );
   }
 
-  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setErrorMessage("");
-    setIsSubmitting(true);
+  const onSubmit = async (data: RecipeFormValues) => {
+    clearErrors("root");
 
     try {
-      await updateRecipe(recipe.id, {
-        name,
-        description,
-      });
+      await updateRecipe(recipe.id, data);
       await router.push(`/recipes/${recipe.id}`);
-    } catch (error) {
-      console.error("Failed to update recipe:", error);
-      setErrorMessage("レシピの更新に失敗しました。");
-    } finally {
-      setIsSubmitting(false);
+    } catch (e) {
+      console.error("Failed to update recipe:", e);
+      setError("root", {
+        type: "server",
+        message: "レシピの更新に失敗しました。",
+      });
     }
   };
 
@@ -93,28 +99,23 @@ export default function EditRecipePage({
     <main>
       <h1>レシピを編集</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="name">名前</label>
           <input
             id="name"
             type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            required
+            {...register("name", { required: "名前は必須です" })}
           />
+          {errors.name ? <p>{errors.name.message}</p> : null}
         </div>
 
         <div>
           <label htmlFor="description">説明</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
+          <textarea id="description" {...register("description")} />
         </div>
 
-        {errorMessage ? <p>{errorMessage}</p> : null}
+        {errors.root ? <p>{errors.root.message}</p> : null}
 
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "更新中..." : "更新する"}
