@@ -1,17 +1,14 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { AlertCircle, ArrowLeft } from "lucide-react";
 
 import { updateRecipe } from "@/api/recipes";
 import { createApiClient } from "@/api/client";
 import type { Recipe } from "@/openapi/api";
 import type { RecipeFormValues } from "@/types/recipeForm";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { RecipeForm } from "@/components/recipe-form";
 
 type Props = {
   recipe: Recipe | null;
@@ -60,81 +57,46 @@ export default function EditRecipePage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    clearErrors,
-    formState: { isSubmitting, errors },
-  } = useForm<RecipeFormValues>({
-    defaultValues: {
-      name: recipe?.name ?? "",
-      description: recipe?.description ?? "",
-    },
-  });
-
   if (hasError || !recipe) {
     return (
-      <main>
-        <h1>レシピ編集</h1>
-        <p>レシピの取得に失敗しました。</p>
-        <p>
-          <Link href="/recipes">一覧に戻る</Link>
-        </p>
-      </main>
+      <div className="mx-auto max-w-2xl">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-destructive/50 bg-destructive/5 p-12 text-center">
+          <AlertCircle className="size-12 text-destructive" />
+          <h2 className="mt-4 text-lg font-semibold">
+            レシピが見つかりません
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            レシピの取得に失敗しました。
+          </p>
+          <Button asChild variant="outline" className="mt-4">
+            <Link href="/recipes">
+              <ArrowLeft className="size-4" />
+              一覧に戻る
+            </Link>
+          </Button>
+        </div>
+      </div>
     );
   }
 
-  const onSubmit = async (data: RecipeFormValues) => {
-    clearErrors("root");
-
-    try {
-      await updateRecipe(recipe.id, data);
-      await router.push(`/recipes/${recipe.id}`);
-    } catch (e) {
-      console.error("Failed to update recipe:", e);
-      setError("root", {
-        type: "server",
-        message: "レシピの更新に失敗しました。",
-      });
-    }
+  const handleSubmit = async (data: RecipeFormValues) => {
+    await updateRecipe(recipe.id, data);
+    await router.push(`/recipes/${recipe.id}`);
   };
 
   return (
-    <main>
-      <Card>
-        <CardHeader>
-          <CardTitle>レシピを編集</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <Label htmlFor="name">名前</Label>
-              <Input
-                id="name"
-                type="text"
-                {...register("name", { required: "名前は必須です" })}
-              />
-              {errors.name ? <p>{errors.name.message}</p> : null}
-            </div>
-
-            <div>
-              <Label htmlFor="description">説明</Label>
-              <Textarea id="description" {...register("description")} />
-            </div>
-
-            {errors.root ? <p>{errors.root.message}</p> : null}
-
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "更新中..." : "更新する"}
-            </Button>
-          </form>
-
-          <Button asChild variant="outline">
-            <Link href={`/recipes/${recipe.id}`}>詳細に戻る</Link>
-          </Button>
-        </CardContent>
-      </Card>
-    </main>
+    <RecipeForm
+      title="レシピを編集"
+      defaultValues={{
+        name: recipe.name,
+        description: recipe.description ?? "",
+      }}
+      onSubmit={handleSubmit}
+      submitLabel="更新する"
+      submittingLabel="更新中..."
+      serverErrorMessage="レシピの更新に失敗しました。"
+      backHref={`/recipes/${recipe.id}`}
+      backLabel="詳細に戻る"
+    />
   );
 }
