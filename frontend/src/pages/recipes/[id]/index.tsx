@@ -2,12 +2,30 @@ import { useState } from "react";
 import Link from "next/link";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
+import { AlertCircle, ArrowLeft, Pencil, Trash2 } from "lucide-react";
 
 import { deleteRecipe } from "@/api/recipes";
 import { createApiClient } from "@/api/client";
 import type { Recipe } from "@/openapi/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type Props = {
   recipe: Recipe | null;
@@ -60,23 +78,27 @@ export default function RecipeDetailPage({
 
   if (hasError || !recipe) {
     return (
-      <main>
-        <h1>レシピ詳細</h1>
-        <p>レシピの取得に失敗しました。</p>
-        <p>
-          <Link href="/recipes">一覧に戻る</Link>
-        </p>
-      </main>
+      <div className="mx-auto max-w-2xl">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-destructive/50 bg-destructive/5 p-12 text-center">
+          <AlertCircle className="size-12 text-destructive" />
+          <h2 className="mt-4 text-lg font-semibold">
+            レシピが見つかりません
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            レシピの取得に失敗しました。
+          </p>
+          <Button asChild variant="outline" className="mt-4">
+            <Link href="/recipes">
+              <ArrowLeft className="size-4" />
+              一覧に戻る
+            </Link>
+          </Button>
+        </div>
+      </div>
     );
   }
 
   const handleDelete = async () => {
-    const shouldDelete = window.confirm("このレシピを削除しますか？");
-
-    if (!shouldDelete) {
-      return;
-    }
-
     setErrorMessage("");
     setIsDeleting(true);
 
@@ -91,32 +113,70 @@ export default function RecipeDetailPage({
   };
 
   return (
-    <main>
+    <div className="mx-auto max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle>{recipe.name}</CardTitle>
+          <CardTitle className="text-xl">{recipe.name}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <p>{recipe.description || "説明はありません。"}</p>
+        <CardContent className="space-y-6">
+          <div>
+            <h2 className="mb-2 text-sm font-medium text-muted-foreground">
+              説明
+            </h2>
+            <p className="leading-relaxed whitespace-pre-wrap">
+              {recipe.description || "説明はありません。"}
+            </p>
+          </div>
 
-          {errorMessage ? <p>{errorMessage}</p> : null}
+          <Separator />
 
-          <Button asChild>
-            <Link href={`/recipes/${recipe.id}/edit`}>編集する</Link>
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
-            {isDeleting ? "削除中..." : "削除する"}
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/recipes">一覧に戻る</Link>
-          </Button>
+          {errorMessage && (
+            <div className="rounded-lg border border-destructive/50 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {errorMessage}
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Button asChild>
+              <Link href={`/recipes/${recipe.id}/edit`}>
+                <Pencil className="size-4" />
+                編集する
+              </Link>
+            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" disabled={isDeleting}>
+                  <Trash2 className="size-4" />
+                  {isDeleting ? "削除中..." : "削除する"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>レシピを削除しますか？</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    「{recipe.name}
+                    」を削除します。この操作は元に戻せません。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete}>
+                    削除する
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <Button asChild variant="outline">
+              <Link href="/recipes">
+                <ArrowLeft className="size-4" />
+                一覧に戻る
+              </Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }
