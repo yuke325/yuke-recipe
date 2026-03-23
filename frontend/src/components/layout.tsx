@@ -18,7 +18,7 @@ export function Layout({ children }: LayoutProps) {
             className="flex items-center gap-2 text-lg font-bold tracking-tight transition-colors hover:text-primary"
           >
             <ChefHat className="size-6 text-primary" />
-            レシピ帳
+            ゆけレシピ
           </Link>
           <ModeToggle />
         </div>
