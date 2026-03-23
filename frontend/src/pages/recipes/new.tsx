@@ -3,6 +3,11 @@ import { useForm } from "react-hook-form";
 
 import { createRecipe } from "@/api/recipes";
 import type { RecipeFormValues } from "@/types/recipeForm";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function NewRecipePage() {
   const router = useRouter();
@@ -37,30 +42,35 @@ export default function NewRecipePage() {
 
   return (
     <main>
-      <h1>新しいレシピを作成</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>新しいレシピを作成</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <Label htmlFor="name">名前</Label>
+              <Input
+                id="name"
+                type="text"
+                {...register("name", { required: "名前は必須です" })}
+              />
+              {errors.name ? <p>{errors.name.message}</p> : null}
+            </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="name">名前</label>
-          <input
-            id="name"
-            type="text"
-            {...register("name", { required: "名前は必須です" })}
-          />
-          {errors.name ? <p>{errors.name.message}</p> : null}
-        </div>
+            <div>
+              <Label htmlFor="description">説明</Label>
+              <Textarea id="description" {...register("description")} />
+            </div>
 
-        <div>
-          <label htmlFor="description">説明</label>
-          <textarea id="description" {...register("description")} />
-        </div>
+            {errors.root ? <p>{errors.root.message}</p> : null}
 
-        {errors.root ? <p>{errors.root.message}</p> : null}
-
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "作成中..." : "作成する"}
-        </button>
-      </form>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "作成中..." : "作成する"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </main>
   );
 }
