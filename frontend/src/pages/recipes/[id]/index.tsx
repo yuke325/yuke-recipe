@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { deleteRecipe } from "@/api/recipes";
 import { createApiClient } from "@/api/client";
 import type { Recipe } from "@/openapi/api";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = {
   recipe: Recipe | null;
@@ -90,22 +92,31 @@ export default function RecipeDetailPage({
 
   return (
     <main>
-      <h1>{recipe.name}</h1>
-      <p>{recipe.description || "説明はありません。"}</p>
+      <Card>
+        <CardHeader>
+          <CardTitle>{recipe.name}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{recipe.description || "説明はありません。"}</p>
 
-      {errorMessage ? <p>{errorMessage}</p> : null}
+          {errorMessage ? <p>{errorMessage}</p> : null}
 
-      <p>
-        <Link href={`/recipes/${recipe.id}/edit`}>編集する</Link>
-      </p>
-      <p>
-        <button type="button" onClick={handleDelete} disabled={isDeleting}>
-          {isDeleting ? "削除中..." : "削除する"}
-        </button>
-      </p>
-      <p>
-        <Link href="/recipes">一覧に戻る</Link>
-      </p>
+          <Button asChild>
+            <Link href={`/recipes/${recipe.id}/edit`}>編集する</Link>
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "削除中..." : "削除する"}
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/recipes">一覧に戻る</Link>
+          </Button>
+        </CardContent>
+      </Card>
     </main>
   );
 }
