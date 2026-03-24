@@ -1,14 +1,15 @@
 import { useRouter } from "next/router";
 
-import { createRecipe } from "@/api/recipes";
+import { useCreateRecipe } from "@/hooks/useRecipes";
 import type { RecipeFormValues } from "@/schemas/recipe";
 import { RecipeForm } from "@/components/recipe-form";
 
 export default function NewRecipePage() {
   const router = useRouter();
+  const createMutation = useCreateRecipe();
 
   const handleSubmit = async (data: RecipeFormValues) => {
-    await createRecipe(data);
+    await createMutation.mutateAsync(data);
     await router.push("/recipes");
   };
 

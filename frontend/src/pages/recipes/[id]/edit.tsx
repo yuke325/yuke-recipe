@@ -1,63 +1,28 @@
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { AlertCircle, ArrowLeft } from "lucide-react";
+import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 
-import { updateRecipe } from "@/api/recipes";
-import { createApiClient } from "@/api/client";
-import type { Recipe } from "@/openapi/api";
+import { useRecipe, useUpdateRecipe } from "@/hooks/useRecipes";
 import type { RecipeFormValues } from "@/schemas/recipe";
 import { Button } from "@/components/ui/button";
 import { RecipeForm } from "@/components/recipe-form";
 
-type Props = {
-  recipe: Recipe | null;
-  hasError: boolean;
-};
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({
-  params,
-}) => {
-  const id = Number(params?.id);
-
-  if (Number.isNaN(id)) {
-    return {
-      props: {
-        recipe: null,
-        hasError: true,
-      },
-    };
-  }
-
-  try {
-    const apiClient = createApiClient();
-    const response = await apiClient.getRecipe(id);
-
-    return {
-      props: {
-        recipe: response.data,
-        hasError: false,
-      },
-    };
-  } catch (e) {
-    console.error("Failed to fetch recipe for edit:", e);
-
-    return {
-      props: {
-        recipe: null,
-        hasError: true,
-      },
-    };
-  }
-};
-
-export default function EditRecipePage({
-  recipe,
-  hasError,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function EditRecipePage() {
   const router = useRouter();
+  const id = Number(router.query.id);
 
-  if (hasError || !recipe) {
+  const { data: recipe, isLoading, isError } = useRecipe(id);
+  const updateMutation = useUpdateRecipe();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (isError || !recipe) {
     return (
       <div className="mx-auto max-w-2xl">
         <div className="flex flex-col items-center justify-center rounded-lg border border-destructive/50 bg-destructive/5 p-12 text-center">
@@ -80,7 +45,7 @@ export default function EditRecipePage({
   }
 
   const handleSubmit = async (data: RecipeFormValues) => {
-    await updateRecipe(recipe.id, data);
+    await updateMutation.mutateAsync({ id: recipe.id, data });
     await router.push(`/recipes/${recipe.id}`);
   };
 
