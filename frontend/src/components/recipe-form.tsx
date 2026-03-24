@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import type { RecipeFormValues } from "@/types/recipeForm";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { recipeFormSchema } from "@/schemas/recipe";
+import type { RecipeFormValues } from "@/schemas/recipe";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -40,7 +42,10 @@ export function RecipeForm({
     setError,
     clearErrors,
     formState: { isSubmitting, errors },
-  } = useForm<RecipeFormValues>({ defaultValues });
+  } = useForm<RecipeFormValues>({
+    defaultValues,
+    resolver: zodResolver(recipeFormSchema),
+  });
 
   const handleFormSubmit = async (data: RecipeFormValues) => {
     clearErrors("root");
@@ -68,7 +73,7 @@ export function RecipeForm({
             <Input
               id="name"
               type="text"
-              {...register("name", { required: "名前は必須です" })}
+              {...register("name")}
               aria-invalid={!!errors.name}
             />
             {errors.name && (

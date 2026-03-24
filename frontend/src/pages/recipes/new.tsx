@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import { createRecipe } from "@/api/recipes";
-import type { RecipeFormValues } from "@/types/recipeForm";
+import type { RecipeFormValues } from "@/schemas/recipe";
 import { RecipeForm } from "@/components/recipe-form";
 
 export default function NewRecipePage() {

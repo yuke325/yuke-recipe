@@ -6,7 +6,7 @@ import { AlertCircle, ArrowLeft } from "lucide-react";
 import { updateRecipe } from "@/api/recipes";
 import { createApiClient } from "@/api/client";
 import type { Recipe } from "@/openapi/api";
-import type { RecipeFormValues } from "@/types/recipeForm";
+import type { RecipeFormValues } from "@/schemas/recipe";
 import { Button } from "@/components/ui/button";
 import { RecipeForm } from "@/components/recipe-form";
 
