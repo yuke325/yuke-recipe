@@ -64,5 +64,5 @@ export async function requireAuth(context: GetServerSidePropsContextOrApi) {
       },
     };
   }
-  return { session };
+  return { props: { session } };
 }

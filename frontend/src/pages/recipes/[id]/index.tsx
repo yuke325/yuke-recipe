@@ -1,4 +1,6 @@
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
+import { requireAuth } from "@/lib/auth";
 import { useRouter } from "next/router";
 import { AlertCircle, ArrowLeft, Loader2, Pencil, Trash2 } from "lucide-react";
 
@@ -22,6 +24,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const result = await requireAuth(context);
+  if ("redirect" in result) return result;
+  return { props: {} };
+};
 
 export default function RecipeDetailPage() {
   const router = useRouter();
