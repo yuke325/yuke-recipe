@@ -1,14 +1,26 @@
 import Link from "next/link";
-import { ChefHat } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { ChefHat, LogOut, User } from "lucide-react";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
 export function Layout({ children }: LayoutProps) {
+  const { data: session } = useSession();
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm">
@@ -20,7 +32,30 @@ export function Layout({ children }: LayoutProps) {
             <ChefHat className="size-6 text-primary" />
             ゆけレシピ
           </Link>
-          <ModeToggle />
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+            {session && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <User className="size-4" />
+                    <span className="hidden sm:inline">{session.user?.name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel className="font-normal">
+                    <p className="text-sm font-medium">{session.user?.name}</p>
+                    <p className="text-xs text-muted-foreground">{session.user?.email}</p>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/auth/signin" })}>
+                    <LogOut className="size-4" />
+                    サインアウト
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
         <Separator />
       </header>
