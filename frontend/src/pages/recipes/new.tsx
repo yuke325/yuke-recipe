@@ -1,8 +1,16 @@
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { requireAuth } from "@/lib/auth";
 
 import { useCreateRecipe } from "@/hooks/useRecipes";
 import type { RecipeFormValues } from "@/schemas/recipe";
 import { RecipeForm } from "@/components/recipe-form";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const result = await requireAuth(context);
+  if ("redirect" in result) return result;
+  return { props: {} };
+};
 
 export default function NewRecipePage() {
   const router = useRouter();

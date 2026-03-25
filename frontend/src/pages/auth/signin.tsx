@@ -39,7 +39,7 @@ export default function SignInPage() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const result = await requireAuth(context);
-  if ("session" in result) {
+  if ("props" in result) {
     return { redirect: { destination: "/recipes", permanent: false } };
   }
   return { props: {} };

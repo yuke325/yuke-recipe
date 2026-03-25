@@ -1,4 +1,6 @@
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
+import { requireAuth } from "@/lib/auth";
 import { AlertCircle, ChefHat, Loader2, Plus } from "lucide-react";
 
 import { useRecipes } from "@/hooks/useRecipes";
@@ -9,6 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const result = await requireAuth(context);
+  if ("redirect" in result) return result;
+  return { props: {} };
+};
 
 export default function RecipesPage() {
   const { data: recipes, isLoading, isError } = useRecipes();
