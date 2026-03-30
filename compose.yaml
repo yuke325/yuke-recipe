@@ -23,6 +23,8 @@ services:
     environment:
       # RAILS_ENV: development
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      ALLOWED_DOMAIN: ${ALLOWED_DOMAIN}
       DATABASE_URL: "mysql2://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}"
     ports:
       - "3000:3000"
