@@ -12,7 +12,7 @@ import { RecipeForm } from "@/components/recipe-form";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const result = await requireAuth(context);
   if ("redirect" in result) return result;
-  return { props: {} };
+  return result;
 };
 
 export default function EditRecipePage() {

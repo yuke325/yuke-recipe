@@ -160,7 +160,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
 
 
-    
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -197,7 +197,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
 
 
-    
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -231,7 +231,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
 
 
-    
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -261,7 +261,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
 
 
-    
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -298,7 +298,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarQueryParameter = {} as any;
 
 
-    
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -506,5 +506,4 @@ export class DefaultApi extends BaseAPI {
         return DefaultApiFp(this.configuration).updateRecipe(id, recipeUpdateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
-
 
