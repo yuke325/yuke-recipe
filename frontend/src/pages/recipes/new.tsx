@@ -7,9 +7,7 @@ import type { RecipeFormValues } from "@/schemas/recipe";
 import { RecipeForm } from "@/components/recipe-form";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const result = await requireAuth(context);
-  if ("redirect" in result) return result;
-  return { props: {} };
+  return requireAuth(context);
 };
 
 export default function NewRecipePage() {

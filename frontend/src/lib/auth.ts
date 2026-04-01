@@ -8,6 +8,7 @@ import type {
 
 const ALLOWED_DOMAIN = process.env.ALLOWED_DOMAIN!;
 
+// 共通のGoogleのログイン設定、サインイン許可条件、JWT/sessionの中身を定義
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -24,14 +25,15 @@ export const authOptions: NextAuthOptions = {
         email.endsWith(`@${ALLOWED_DOMAIN}`)
       );
     },
+    // Googleから返されたid_tokenをJWTとsessionに含める
     async jwt({ token, account }) {
-      if (account) {
-        token.accessToken = account.access_token;
+      if (account?.id_token) {
+        token.googleIdToken = account.id_token;
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string | undefined;
+      session.googleIdToken = token.googleIdToken as string | undefined;
       return session;
     },
   },
@@ -49,7 +51,10 @@ type GetServerSidePropsContextOrApi =
   | GetServerSidePropsContext
   | [NextApiRequest, NextApiResponse];
 
+// 未ログインならリダイレクト、ログイン済みならセッションを返す
 export async function requireAuth(context: GetServerSidePropsContextOrApi) {
+  // Next.jsから渡されるcontextがGetServerSidePropsContextと
+  // APIルート[req, res]どちらでも対応できるように形を揃える
   const args = Array.isArray(context)
     ? context
     : ([context.req, context.res] as [NextApiRequest, NextApiResponse]);

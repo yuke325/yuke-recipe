@@ -10,3 +10,4 @@ yarn-error.log*
 *.orig
 .claude/
 TODO.md
+AUTH.md

@@ -13,9 +13,7 @@ import {
 } from "@/components/ui/card";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const result = await requireAuth(context);
-  if ("redirect" in result) return result;
-  return { props: {} };
+  return requireAuth(context);
 };
 
 export default function RecipesPage() {
