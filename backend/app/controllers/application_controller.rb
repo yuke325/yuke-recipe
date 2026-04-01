@@ -14,9 +14,7 @@ class ApplicationController < ActionController::API
   end
 
   def current_identity
-    return @current_identity if defined?(@current_identity)
-
-    @current_identity = authenticate_with_http_token do |token, _options|
+    authenticate_with_http_token do |token|
       GoogleIdTokenVerifier.call(token)
     end
   end
