@@ -1,6 +1,43 @@
 .git
-tmp/
-log/
-.env*
-vebder/bundle
-storage/
+.github
+.gitignore
+.dockerignore
+Dockerfile
+.rubocop.yml
+
+# Secrets and local env
+.env
+.env.*
+config/master.key
+.kamal
+
+# Local tooling/editor metadata
+.claude
+.ruby-lsp
+.bundle
+
+# Logs, temp files, and runtime state
+log/*
+tmp/*
+storage/*
+coverage
+
+# Tests and local-only docs/config
+spec
+.rspec
+README.md
+
+# Dependency caches not needed in image builds
+vendor/bundle
+node_modules
+
+# Frontend/build artifacts typically generated locally
+public/assets
+public/packs
+public/packs-test
+
+# Keep placeholders for tracked empty dirs when copied selectively later
+!log/.keep
+!tmp/.keep
+!tmp/pids/.keep
+!storage/.keep
