@@ -17,6 +17,7 @@ default: &default
   password: <%= ENV.fetch("DATABASE_PASSWORD") { "" } %>
   host: <%= ENV.fetch("DATABASE_HOST") { "127.0.0.1" } %>
   port: <%= ENV.fetch("DATABASE_PORT") { 3306 } %>
+  socket: <%= ENV["DATABASE_SOCKET"] %>
 
 development:
   <<: *default
