@@ -5,7 +5,7 @@ on:
   push:
     branches: [develop]
     paths:
-      - 'backend/**'
+      - "backend/**"
 
 jobs:
   job_id:
@@ -13,17 +13,37 @@ jobs:
     environment: development
 
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
 
     steps:
-    - uses: 'actions/checkout@v4'
+      - uses: "actions/checkout@v4"
 
-    - uses: 'google-github-actions/auth@v3'
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-        service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      - uses: "google-github-actions/auth@v3"
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-    - name: Check Auth
-      run: gcloud auth list
+      - name: Login to Artifact Registry
+        run: |
+          gcloud auth print-access-token | docker login \
+            -u oauth2accesstoken \
+            --password-stdin https://${{ vars.AR_REGISTRY }}
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t ${{ vars.AR_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ vars.AR_REPOSITORY }}/${{ vars.AR_IMAGE }}:${{ github.sha }} \
+            ./backend
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ vars.AR_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ vars.AR_REPOSITORY }}/${{ vars.AR_IMAGE }}:${{ github.sha }}
+
+      - name: Deploy to Cloud Run
+        uses: 'google-github-actions/deploy-cloudrun@v3'
+        with:
+          service: ${{ vars.CLOUD_RUN_SERVICE }}
+          region: ${{ vars.CLOUD_RUN_REGION }}
+          image: ${{ vars.AR_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ vars.AR_REPOSITORY }}/${{ vars.AR_IMAGE }}:${{ github.sha }}
