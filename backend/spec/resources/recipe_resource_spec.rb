@@ -39,9 +39,9 @@ RSpec.describe RecipeResource do
       let!(:pasta) { create(:recipe, name: 'パスタ', description: 'トマトソース') }
 
       it '各レシピを順番どおりにシリアライズする' do
-        json = JSON.parse(described_class.new([curry, pasta]).serialize)
+        json = JSON.parse(described_class.new([ curry, pasta ]).serialize)
 
-        expect(json).to eq([serialized_recipe(curry), serialized_recipe(pasta)])
+        expect(json).to eq([ serialized_recipe(curry), serialized_recipe(pasta) ])
       end
     end
 
